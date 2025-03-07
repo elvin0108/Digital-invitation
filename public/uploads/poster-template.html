@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invitation Card</title>
+  <style>
+    body {
+      width: 297mm;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #f0f0f0;
+    }
+    .card {
+      height: auto;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: white;
+    }
+    .card img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    .students-profile {
+      /* You can adjust these values to position the elements exactly where you want */
+      position: absolute;
+      top: 110%;
+      left: 30%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .overlay-image {
+      width: 250px;
+      height: 250px;
+      margin-bottom: 25px;
+      object-fit: cover;
+      border-radius: 50%;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+    .name {
+      font-size: 30px;
+      font-weight: bold;
+      color: #a90100;
+      text-align: center;
+    }
+    
+  </style>
+</head>
+<body>
+  <div class="card-container">
+    <div class="back-img">
+      <img src="./invitation-1.png" alt="Invitation Card Template"/>
+    </div>
+    <div class="students-profile">
+      <img class="overlay-image" alt="Student Image" src="##_Student_Image_##"/>
+      <div class="name">##_Student_Name_##</div>
+    </div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+<div class="row">
+    <div class="col-md-12 mb-4">
+        <div class="card shadow">
+            <div class="card-body">
+                <h2 class="card-title mb-4">Admin Dashboard</h2>
+                <h3>Event: {{eventDetails.name}}</h3>
+                
+                <div class="row mt-4">
+                    <div class="col-md-4">
+                        <div class="card text-white bg-primary mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Total Attendees</h5>
+                                <h2>{{stats.totalCount}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-success mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Direct Visits</h5>
+                                <h2>{{stats.directCount}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card text-white bg-info mb-3">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">Referred Visits</h5>
+                                <h2>{{stats.referredCount}}</h2>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Top Referrers</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Referrals</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each stats.topReferrers}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.mobile}}</td>
+                                <td><span class="badge bg-success">{{this.referralCount}}</span></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow">
+            <div class="card-body">
+                <h3 class="card-title mb-4">Referral Chain</h3>
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Mobile</th>
+                                <th>Referred By</th>
+                                <th>Created On</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each attendees}}
+                            <tr>
+                                <td>{{this.name}}</td>
+                                <td>{{this.mobile}}</td>
+                                <td>
+                                    {{#if this.referredBy}}
+                                    {{this.referredBy.name}}
+                                    {{else}}
+                                    <span class="text-muted">Direct</span>
+                                    {{/if}}
+                                </td>
+                                <td>{{formatDate this.createdAt}}</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

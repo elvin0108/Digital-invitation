@@ -1,0 +1,105 @@
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card shadow">
+            <div class="card-body p-5 text-center">
+                <h2 class="card-title mb-4">Your Invitation Poster is Ready!</h2>
+
+                <div class="poster-container mb-4 position-relative">
+                    <!-- Download button positioned in the middle of poster -->
+                    {{!-- <button class="btn btn-primary download-btn-center" id="download-poster-btn">
+                        <i class="fas fa-download"></i> Download
+                    </button> --}}
+                    <img src="{{posterUrl}}" alt="Your invitation poster" class="img-fluid poster-image">
+                    <a href="{{posterUrl}}" class="btn btn-primary download-btn-center" id="download-poster-btn"
+                        download>
+                        <i class="fas fa-download"></i> Download
+                    </a>
+                </div>
+
+                <div class="sharing-options mb-4">
+                    <h4>Share Your Invitation:</h4>
+
+                    <div class="d-flex justify-content-center mb-3">
+                        <div class="input-group share-link-group">
+                            <input type="text" class="form-control" id="share-link" value="{{shareUrl}}" readonly>
+                            <button class="btn btn-outline-primary" type="button" id="copy-link-btn">
+                                <i class="fas fa-copy"></i> Copy
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="social-share-buttons">
+
+                        <a href="/rang-kasumbal/share-whatsapp/{{uniqueId}}" class="btn btn-success me-2">
+                            <i class="fab fa-whatsapp"></i> WhatsApp
+                        </a>
+
+                        <a href="https://www.facebook.com/sharer/sharer.php?u={{shareUrl}}" class="btn btn-primary me-2"
+                            target="_blank">
+                            <i class="fab fa-facebook"></i> Facebook
+                        </a>
+
+                        <a href="https://twitter.com/intent/tweet?text=I'm attending {{eventDetails.name}}! Create your own invitation here: {{shareUrl}}"
+                            class="btn btn-info me-2" target="_blank">
+                            <i class="fab fa-twitter"></i> Twitter
+                        </a>
+
+                        <a href="https://www.instagram.com/" class="btn btn-danger me-2" target="_blank"
+                            onclick="alert('Copy your link first and paste it in your Instagram story or post!'); navigator.clipboard.writeText('I\'m attending {{eventDetails.name}}! Create your own invitation here: {{shareUrl}}');">
+                            <i class="fab fa-instagram"></i> Instagram
+                        </a>
+                    </div>
+                </div>
+
+                <div class="referral-tracker mt-4">
+                    <div class="card bg-light">
+                        <div class="card-body">
+                            <h5 class="card-title">Referral Tracker</h5>
+                            <p class="mb-2">
+                                <i class="fas fa-user-friends text-primary me-2"></i>
+                                <span id="referral-count">0</span> people have created their poster using your link
+                            </p>
+                            <p class="mb-0 small">Share your link with more people to increase your impact!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <p>Share this with your friends and family to let them know you're attending!</p>
+                    <p>When they use your link, they'll be able to create their own invitation.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Check for updated referral count every 30 seconds
+    setInterval(async function () {
+        try {
+            const response = await fetch('/rang-kasumbal/api/referral-count/{{uniqueId}}');
+            const data = await response.json();
+            if (data.count !== undefined) {
+                document.getElementById('referral-count').textContent = data.count;
+            }
+        } catch (error) {
+            console.error('Error fetching referral count:', error);
+        }
+    }, 30000);
+
+    function shareOnWhatsApp(imageUrl) {
+        if (navigator.share) {
+            navigator.share({
+                title: 'Invitation Poster',
+                text: "Check out my invitation poster!",
+                url: imageUrl
+            }).then(() => {
+                console.log('Successful share');
+            }).catch((error) => {
+                console.error('Error sharing:', error);
+            });
+        } else {
+            window.open(`https://api.whatsapp.com/send?text=Check out my invitation poster! ${window.location.origin + imageUrl}`, '_blank');
+        }
+    }
+</script>

@@ -1,0 +1,187 @@
+/* Global Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+}
+
+.event-title {
+    background: linear-gradient(to right, #ff9a9e 0%, #fad0c4 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight: bold;
+}
+
+/* Event Card */
+.event-card {
+    background: linear-gradient(to bottom right, #ffffff, #f9f9f9);
+    border: none;
+    border-radius: 15px;
+}
+
+.detail-card {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #f8f9fa;
+    height: 100%;
+    transition: transform 0.3s;
+}
+
+.detail-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Form Styling */
+.form-control:focus {
+    border-color: #fad0c4;
+    box-shadow: 0 0 0 0.25rem rgba(255, 154, 158, 0.25);
+}
+
+/* Poster Container with relative positioning */
+.poster-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 10px;
+    max-width: 600px;
+    margin: 0 auto;
+    position: relative; /* Needed for absolute positioning of the button */
+}
+
+/* Download button styled and centered */
+.download-btn-center {
+    position: absolute;
+    top: 70%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 10;
+    background: linear-gradient(135deg, #4a89dc, #5e9cea);
+    border: none;
+    border-radius: 30px;
+    padding: 10px 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    opacity: 0; /* Hidden by default */
+}
+
+/* Show the button on hover */
+.poster-container:hover .download-btn-center {
+    opacity: 1;
+}
+
+.download-btn-center:hover {
+    transform: translate(-50%, -50%) scale(1.05);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+    background: linear-gradient(135deg, #5e9cea, #4a89dc);
+}
+
+.download-btn-center i {
+    margin-right: 5px;
+}
+
+/* Add an overlay effect when hovering over the poster */
+.poster-container:hover .poster-image {
+    filter: brightness(0.7);
+    transition: filter 0.3s ease;
+}
+
+.poster-image {
+    max-width: 100%;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+}
+
+.share-link-group {
+    max-width: 500px;
+}
+
+/* Fixed Social Share Buttons for Mobile */
+.social-share-buttons {
+    margin-top: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+.social-share-buttons a {
+    margin-bottom: 10px;
+    min-width: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Make sure icons are visible and properly spaced */
+.social-share-buttons i {
+    margin-right: 8px;
+}
+
+/* Media queries for responsive design */
+@media (max-width: 576px) {
+    .social-share-buttons {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .social-share-buttons a {
+        width: 80%;
+        margin-right: 0;
+    }
+}
+
+/* Animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+/* Cropper.js specific styles */
+.img-container {
+    max-height: 500px;
+    margin-bottom: 20px;
+}
+
+.img-container img {
+    display: block;
+    max-width: 100%;
+}
+
+.cropper-view-box,
+.cropper-face {
+    border-radius: 50%;
+}
+
+.preview-circle {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+#image-preview {
+    transition: all 0.3s ease;
+}
+
+#image-preview:hover {
+    opacity: 0.8;
+}
+
+#recrop-button {
+    transition: all 0.3s ease;
+    opacity: 0;
+}
+
+#image-preview-container:hover #recrop-button {
+    opacity: 1;
+}

@@ -1,0 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card shadow event-card">
+            <div class="card-body text-center p-5">
+                <h2 class="card-title mb-4">Welcome to {{eventDetails.name}}</h2>
+                <p class="card-text mb-4">
+                    We're excited to invite you to our annual school function! 
+                    Create your personalized invitation poster and share it with your friends and family.
+                </p>
+                
+                <div class="event-details mb-4">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="detail-card">
+                                <i class="fas fa-calendar-alt fa-2x mb-3 text-primary"></i>
+                                <h5>Date</h5>
+                                <p>{{eventDetails.date}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-card">
+                                <i class="fas fa-map-marker-alt fa-2x mb-3 text-primary"></i>
+                                <h5>Venue</h5>
+                                <p>{{eventDetails.venue}}</p>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="detail-card">
+                                <i class="fas fa-clock fa-2x mb-3 text-primary"></i>
+                                <h5>Time</h5>
+                                <p>{{eventDetails.time}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <a href="/rang-kasumbal/invite" class="btn btn-primary btn-lg">Create Your Invitation</a>
+            </div>
+        </div>
+    </div>
+</div>
