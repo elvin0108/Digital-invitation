@@ -21,7 +21,11 @@ async function generatePoster({ name, imagePath, outputPath}) {
     fs.writeFileSync(tempHtmlPath, htmlTemplate);
     
     // Launch puppeteer to render the HTML
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+        headless: 'new',
+        executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-134.0.6998.35/chrome-linux64/chrome',
+        args: ['--no-sandbox', '--disable-setuid-sandbox']
+    });
     const page = await browser.newPage();
     
     // Open the HTML file
