@@ -6,6 +6,7 @@ const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const Attendee = require('../models/attendee');
 const generatePoster = require('../utils/posterGenerator').generatePoster;
+const axios = require('axios');
 
 // Set up multer for handling file uploads
 const storage = multer.diskStorage({
@@ -43,6 +44,16 @@ function checkFileType(file, cb) {
     cb('Error: Images only!');
   }
 }
+
+const shortenUrl = async (url) => {
+    try {
+        const response = await axios.get(`https://tinyurl.com/api-create.php?url=${encodeURIComponent(url)}`);
+        return response.data;
+    } catch (error) {
+        console.error('Error shortening URL:', error);
+        return url; // Fallback to the original URL if shortening fails
+    }
+};
 
 // Home page
 router.get('/rang-kasumbal', (req, res) => {
@@ -216,41 +227,46 @@ router.get('/rang-kasumbal/admin/stats', async (req, res) => {
   router.get('/rang-kasumbal/share-whatsapp/:uniqueId', async (req, res) => {
     try {
       const { uniqueId } = req.params;
-      
+  
       // Find the attendee with the given uniqueId
       const attendee = await Attendee.findOne({ uniqueId });
-      
+  
       if (!attendee) {
-        return res.status(404).render('error', { 
+        return res.status(404).render('error', {
           message: 'Invitation not found',
           error: { status: 404 }
         });
       }
-      
-      // Create a shareable URL to your landing page
+  
+      // Create original URLs
       const shareableUrl = `${process.env.BASE_URL}/rang-kasumbal/invitation/${uniqueId}`;
-      const inviteUrl = `${process.env.BASE_URL}/rang-kasumbal/invite/${uniqueId}`
-      
-      // Construct message with event details
-      const message = `હું *રંગ કસુંબલ - ૨૦૨૫* કાર્યક્રમમાં હાજર રહેવાનો છું! \nતમે પણ આ રંગીન અને મનમોહક સાંસ્કૃતિક કાર્યક્રમમાં મારી સાથે પધારો. \n\n📍 *સ્થળ*: શ્રી આરૂણી શૈક્ષણિક સંકુલ,સાણથલી \n🗓️ *તારીખ*: ૧૨ માર્ચ, ૨૦૨૫ - સાંજે ૫ઃ૦૦ વાગ્યે \n\nમારું આમંત્રણ અહીંથી જુઓ: ${shareableUrl}\n\nતમારું પોતાનું આમંત્રણ બનાવો: ${inviteUrl}`;
-      
+      const inviteUrl = `${process.env.BASE_URL}/rang-kasumbal/invite/${uniqueId}`;
+
+  
+      // Get shortened URLs
+      const [shortShareableUrl, shortInviteUrl] = await Promise.all([
+        shortenUrl(shareableUrl),
+        shortenUrl(inviteUrl)
+      ]);
+  
+      // Construct the message with shortened URLs
+      const message = `હું *રંગ કસુંબલ - ૨૦૨૫* કાર્યક્રમમાં હાજર રહેવાનો છું! \nતમે પણ આ રંગીન અને મનમોહક સાંસ્કૃતિક કાર્યક્રમમાં મારી સાથે પધારો. \n\n📍 *સ્થળ*: શ્રી આરૂણી શૈક્ષણિક સંકુલ, સાણથલી \n🗓️ *તારીખ*: ૧૨ માર્ચ, ૨૦૨૫ - સાંજે ૫ઃ૦૦ વાગ્યે \n\nમારું આમંત્રણ અહીંથી જુઓ: ${shortShareableUrl}\n\nતમારું પોતાનું આમંત્રણ બનાવો: ${shortInviteUrl}`;
+  
       // Encode the message
       const encodedMessage = encodeURIComponent(message);
-      
+  
       // Determine if user is on mobile or desktop based on user agent
       const userAgent = req.headers['user-agent'];
       const isMobile = /Android|iPhone|iPad|iPod/i.test(userAgent);
-      
-      let whatsappUrl;
-      if (isMobile) {
-        whatsappUrl = `whatsapp://send?text=${encodedMessage}`;
-      } else {
-        whatsappUrl = `https://web.whatsapp.com/send?text=${encodedMessage}`;
-      }
-      
+  
+      // Prepare WhatsApp URL
+      const whatsappUrl = isMobile
+        ? `whatsapp://send?text=${encodedMessage}`
+        : `https://web.whatsapp.com/send?text=${encodedMessage}`;
+  
       // Redirect the user to WhatsApp
       res.redirect(whatsappUrl);
-      
+  
     } catch (err) {
       console.error('Error sharing to WhatsApp:', err);
       res.status(500).render('error', {
@@ -264,7 +280,9 @@ router.get('/rang-kasumbal/admin/stats', async (req, res) => {
     try {
       const { uniqueId } = req.params;
       const attendee = await Attendee.findOne({ uniqueId });
-      const postURL = `${process.env.BASE_URL}`+attendee.posterUrl;
+      const shareableUrl = `${process.env.BASE_URL}/rang-kasumbal/invitation/${uniqueId}`;
+      const shortShareableUrl = await shortenUrl(shareableUrl);
+      const postURL = `${process.env.BASE_URL}` + attendee.posterUrl;
       if (!attendee) {
         return res.status(404).render('error', { 
           message: 'Invitation not found',
@@ -276,6 +294,7 @@ router.get('/rang-kasumbal/admin/stats', async (req, res) => {
       res.render('invitation', {
         title: `${attendee.name}'s Invitation to ${process.env.EVENT_NAME}`,
         attendee,
+        previewUrl: shortShareableUrl,
         posterUrl: postURL,
         baseUrl: process.env.BASE_URL,
         shareUrl: `${process.env.BASE_URL}/rang-kasumbal/invite/${uniqueId}`,
