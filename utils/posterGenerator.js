@@ -23,8 +23,13 @@ async function generatePoster({ name, imagePath, outputPath}) {
     // Launch puppeteer to render the HTML
     const browser = await puppeteer.launch({
         headless: 'new',
-        executablePath: '/home/ubuntu/.cache/puppeteer/chrome/linux-134.0.6998.35/chrome-linux64/chrome',
-        args: ['--no-sandbox', '--disable-setuid-sandbox']
+        executablePath: '/usr/bin/chromium-browser',
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage', // This is often needed on CI systems
+            '--disable-gpu'            // Often needed on headless servers
+        ]
     });
     const page = await browser.newPage();
     
