@@ -5,7 +5,7 @@ const multer = require('multer');
 const { v4: uuidv4 } = require('uuid');
 const fs = require('fs');
 const Attendee = require('../models/attendee');
-const generatePoster = require('../utils/posterGenerator');
+const generatePoster = require('../utils/posterGenerator').generatePoster;
 
 // Set up multer for handling file uploads
 const storage = multer.diskStorage({

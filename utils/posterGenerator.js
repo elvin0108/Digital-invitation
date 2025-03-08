@@ -2,6 +2,8 @@ const path = require('path');
 const fs = require('fs');
 const puppeteer = require('puppeteer-core');
 
+let browser;
+
 async function generatePoster({ name, imagePath, outputPath }) {
     try {
         // Read the HTML template
@@ -20,10 +22,13 @@ async function generatePoster({ name, imagePath, outputPath }) {
         const tempHtmlPath = path.join(__dirname, '../public/uploads', `poster-${Date.now()}.html`);
         fs.writeFileSync(tempHtmlPath, htmlTemplate);
 
-        // Launch puppeteer to render the HTML
-        const browser = await puppeteer.connect({
-            browserWSEndpoint: process.env.PUPPETEER_WS_ENDPOINT, // Add the WebSocket URL to an env variable
-        });
+        // Connect to the existing browser instance if not already connected
+        if (!browser) {
+            browser = await puppeteer.connect({
+                browserWSEndpoint: process.env.PUPPETEER_WS_ENDPOINT,
+            });
+        }
+
         const page = await browser.newPage();
 
         // Open the HTML file
@@ -40,8 +45,8 @@ async function generatePoster({ name, imagePath, outputPath }) {
             omitBackground: true
         });
 
-        // Close browser and clean up
-        await browser.close();
+        // Close the page but keep the browser running
+        await page.close();
         fs.unlinkSync(tempHtmlPath); // Delete temporary HTML file
 
         return outputPath;
@@ -51,4 +56,12 @@ async function generatePoster({ name, imagePath, outputPath }) {
     }
 }
 
-module.exports = generatePoster;
+// Optionally add a cleanup method if needed
+async function closeBrowser() {
+    if (browser) {
+        await browser.close();
+        browser = null;
+    }
+}
+
+module.exports = { generatePoster, closeBrowser };
